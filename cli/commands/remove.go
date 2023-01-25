@@ -2,8 +2,8 @@ package commands
 
 import "github.com/spf13/cobra"
 
-func NewRemoveCommand() *cobra.Command {
-	addCmd := &cobra.Command{
+func RemoveCommand() *cobra.Command {
+	rmCmd := &cobra.Command{
 		Use:   "remove",
 		Short: "Remove from favorites",
 		Long: ` Removes favorite information from the data store.`,
@@ -11,5 +11,5 @@ func NewRemoveCommand() *cobra.Command {
 			// Do Stuff Here
 		},
 	}
-	return addCmd
+	return rmCmd
 }

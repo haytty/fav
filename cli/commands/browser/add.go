@@ -2,7 +2,7 @@ package browser
 
 import "github.com/spf13/cobra"
 
-func NewAddCommand() *cobra.Command {
+func AddCommand() *cobra.Command {
 	addCmd := &cobra.Command{
 		Use:   "add",
 		Short: "Fav is a very fast static site generator",

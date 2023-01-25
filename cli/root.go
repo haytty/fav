@@ -2,7 +2,6 @@ package cli
 
 import (
 	"github.com/haytty/fav/cli/commands"
-	"github.com/haytty/fav/cli/commands/browser"
 	"github.com/spf13/cobra"
 )
 
@@ -21,13 +20,9 @@ func NewFavCommand(c Cli) *cobra.Command {
 		},
 	}
 	rootCmd.AddCommand(
-		// fav commands
-		commands.NewAddCommand(),
-		commands.NewRemoveCommand(),
-
-		// fav browser commands
-		browser.NewAddCommand(),
-		browser.NewRemoveCommand(),
+		commands.AddCommand(),
+		commands.RemoveCommand(),
+		commands.BrowserCommand(),
 	)
 	return rootCmd
 }

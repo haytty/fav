@@ -2,9 +2,9 @@ package browser
 
 import "github.com/spf13/cobra"
 
-func NewRemoveCommand() *cobra.Command {
-	addCmd := &cobra.Command{
-		Use:   "add",
+func RemoveCommand() *cobra.Command {
+	rmCmd := &cobra.Command{
+		Use:   "remove",
 		Short: "Fav is a very fast static site generator",
 		Long: `A Fast and Flexible Static Site Generator built with
                 love by spf13 and friends in Go.
@@ -13,5 +13,5 @@ func NewRemoveCommand() *cobra.Command {
 			// Do Stuff Here
 		},
 	}
-	return addCmd
+	return rmCmd
 }
