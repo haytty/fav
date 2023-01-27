@@ -1,16 +1,20 @@
 package browser
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+	"github.com/haytty/fav/cli/cli"
+	"github.com/spf13/cobra"
+)
 
-func RemoveCommand() *cobra.Command {
+func RemoveCommand(c cli.Cli) *cobra.Command {
 	rmCmd := &cobra.Command{
 		Use:   "remove",
-		Short: "Fav is a very fast static site generator",
-		Long: `A Fast and Flexible Static Site Generator built with
-                love by spf13 and friends in Go.
-                Complete documentation is available at http://hugo.spf13.com`,
+		Short: "",
+		Long: `
+               
+               `,
 		Run: func(cmd *cobra.Command, args []string) {
-			// Do Stuff Here
+			fmt.Println("browser? remove?")
 		},
 	}
 	return rmCmd

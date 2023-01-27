@@ -1,14 +1,18 @@
 package commands
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+	"github.com/haytty/fav/cli/cli"
+	"github.com/spf13/cobra"
+)
 
-func RemoveCommand() *cobra.Command {
+func RemoveCommand(cli cli.Cli) *cobra.Command {
 	rmCmd := &cobra.Command{
 		Use:   "remove",
 		Short: "Remove from favorites",
-		Long: ` Removes favorite information from the data store.`,
+		Long:  ` Removes favorite information from the data store.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			// Do Stuff Here
+			fmt.Println("remove?")
 		},
 	}
 	return rmCmd
