@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"github.com/haytty/fav/cli/cli"
 	"github.com/haytty/fav/cli/commands"
 	"github.com/haytty/fav/cli/flags"
@@ -9,6 +8,7 @@ import (
 	"github.com/haytty/fav/cli/version"
 	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
 )
 
 func NewFavCommand(c cli.Cli) *cobra.Command {
@@ -26,10 +26,17 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		commands.AddCommand(c),
 		commands.RemoveCommand(c),
 		commands.BrowserCommand(c),
+		commands.InitCommand(c),
 	)
 
 	opts := flags.NewGlobalOption()
-	rootCmd.PersistentFlags().StringVarP(&opts.ConfigDir, "configDir", "d", fmt.Sprintf("%s/%s", os.Getenv("HOME"), ".config"), "config directory")
+	rootCmd.PersistentFlags().StringVarP(
+		&opts.BaseDir,
+		"base-dir",
+		"d",
+		filepath.Join(os.Getenv("HOME"), ".config", "fav"),
+		"base directory",
+	)
 
 	return rootCmd
 }

@@ -1,7 +1,7 @@
 package flags
 
 type GlobalOption struct {
-	ConfigDir string
+	BaseDir string
 }
 
 var globalOption *GlobalOption
