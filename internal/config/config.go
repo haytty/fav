@@ -6,6 +6,7 @@ import (
 	"github.com/haytty/fav/internal/datastore/file"
 	"github.com/haytty/fav/internal/util"
 	"io"
+	"os"
 	"path/filepath"
 )
 
@@ -22,6 +23,14 @@ const (
 	configFileBaseName = "config.json"
 	favDataFile        = "fav.db"
 	browserDataFile    = "browser.db"
+)
+
+var (
+	configRootPath = filepath.Join(os.Getenv("HOME"), ".config", "fav")
+)
+
+var (
+	cached_data *Config
 )
 
 func newFileConfigWithError(dataStore string, configRootPath string) (*Config, error) {
@@ -48,22 +57,32 @@ func NewConfigWithError(dataStore string, configRootPath string) (*Config, error
 	return nil, err
 }
 
-func LoadConfig(dir *BaseDir) (*Config, error) {
+func LoadConfig() error {
+	dir := BaseDirData()
+
 	datastore, err := file.NewFileWithError(dir.Path, filepath.Join(dir.Path, configFileBaseName))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	conf := &Config{
 		dataStore: datastore,
 	}
 	b, err := io.ReadAll(conf.dataStore)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if err := json.Unmarshal(b, conf); err != nil {
-		return nil, err
+		return err
 	}
-	return conf, nil
+	cached_data = conf
+	return nil
+}
+
+func ConfigData() *Config {
+	if cached_data == nil {
+		LoadConfig()
+	}
+	return cached_data
 }
 
 func (c *Config) Save() error {

@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -10,11 +11,27 @@ type File struct {
 }
 
 func (f *File) WriteWithIdempotency(p []byte) (n int, err error) {
-	_, err = f.DataFile.Seek(0, 0)
+	realName := f.DataFile.Name()
+	tmpName := fmt.Sprintf("%s.bk", realName)
+
+	err = os.Rename(realName, tmpName)
 	if err != nil {
 		return 0, err
 	}
-	return f.Write(p)
+	f2, err := fileOpen(realName)
+	if err != nil {
+		return 0, err
+	}
+	defer f2.Close()
+	n, err = f2.Write(p)
+	if err != nil {
+		return 0, err
+	}
+	err = os.Remove(tmpName)
+	if err != nil {
+		return 0, err
+	}
+	return n, nil
 }
 
 func (f *File) Close() error {
@@ -30,7 +47,7 @@ func (f *File) Write(p []byte) (n int, err error) {
 }
 
 func NewFileWithError(configRootPath string, configFileName string) (*File, error) {
-	f, err := os.OpenFile(configFileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	f, err := fileOpen(configFileName)
 	if err != nil {
 		return nil, err
 	}
@@ -38,4 +55,8 @@ func NewFileWithError(configRootPath string, configFileName string) (*File, erro
 		ConfigRootPath: configRootPath,
 		DataFile:       f,
 	}, nil
+}
+
+func fileOpen(name string) (*os.File, error) {
+	return os.OpenFile(name, os.O_RDWR|os.O_CREATE, os.ModePerm)
 }

@@ -6,6 +6,8 @@ import (
 	"github.com/haytty/fav/cli/flags"
 	"github.com/haytty/fav/cli/logger"
 	"github.com/haytty/fav/cli/version"
+	"github.com/haytty/fav/internal/config"
+	"github.com/haytty/fav/internal/util"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -20,7 +22,7 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
                Your favorite site from the CLI`,
 		Version:           version.CurrentVersion(),
 		RunE:              commands.ShowHelp(c.Err()),
-		PersistentPreRunE: initializeCommand(c),
+		PersistentPreRunE: initialize(c),
 	}
 	rootCmd.AddCommand(
 		commands.AddCommand(c),
@@ -41,8 +43,22 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 	return rootCmd
 }
 
-func initializeCommand(c cli.Cli) func(cmd *cobra.Command, args []string) error {
+func initialize(c cli.Cli) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		return logger.SetupLogger(c)
+		opts := flags.NewGlobalOption()
+		err := logger.SetupLogger(c)
+		if err != nil {
+			return err
+		}
+
+		config.SetBaseDir(opts.BaseDir)
+		if util.IsDirectoryExist(opts.BaseDir) {
+			err = config.LoadConfig()
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
 	}
 }

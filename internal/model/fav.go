@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/haytty/fav/internal/config"
 	"github.com/haytty/fav/internal/datastore"
 	"github.com/haytty/fav/internal/util"
 	"io"
@@ -63,7 +64,13 @@ func (f *Fav) hasName(name FavName) bool {
 	return ok
 }
 
-func LoadFav(store datastore.DataStore) (*Fav, error) {
+func LoadFav() (*Fav, error) {
+	registerType := "fav"
+	store, err := datastore.NewDataStoreWithError(config.ConfigData(), registerType)
+	if err != nil {
+		return nil, err
+	}
+
 	b, err := io.ReadAll(store)
 	if err != nil {
 		return nil, err

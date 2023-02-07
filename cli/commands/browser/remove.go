@@ -1,8 +1,8 @@
 package browser
 
 import (
-	"fmt"
 	"github.com/haytty/fav/cli/cli"
+	browser "github.com/haytty/fav/internal/handler/fav/browser/remove"
 	"github.com/spf13/cobra"
 )
 
@@ -11,10 +11,11 @@ func RemoveCommand(c cli.Cli) *cobra.Command {
 		Use:   "remove",
 		Short: "",
 		Long: `
-               
                `,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("browser? remove?")
+		Args: cobra.MatchAll(cobra.ExactArgs(1)),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := args[0]
+			return browser.Apply(name)
 		},
 	}
 	return rmCmd

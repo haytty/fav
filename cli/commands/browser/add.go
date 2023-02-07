@@ -1,8 +1,8 @@
 package browser
 
 import (
-	"fmt"
 	"github.com/haytty/fav/cli/cli"
+	browser "github.com/haytty/fav/internal/handler/fav/browser/add"
 	"github.com/spf13/cobra"
 )
 
@@ -11,10 +11,12 @@ func AddCommand(c cli.Cli) *cobra.Command {
 		Use:   "add",
 		Short: "",
 		Long: `
-               
                `,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("browser? add?")
+		Args: cobra.MatchAll(cobra.ExactArgs(2)),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := args[0]
+			url := args[1]
+			return browser.Apply(name, url)
 		},
 	}
 	return addCmd

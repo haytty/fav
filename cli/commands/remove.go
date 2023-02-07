@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"fmt"
 	"github.com/haytty/fav/cli/cli"
+	fav "github.com/haytty/fav/internal/handler/fav/remove"
 	"github.com/spf13/cobra"
 )
 
@@ -11,8 +11,10 @@ func RemoveCommand(cli cli.Cli) *cobra.Command {
 		Use:   "remove",
 		Short: "Remove from favorites",
 		Long:  ` Removes favorite information from the data store.`,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("remove?")
+		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := args[0]
+			return fav.Apply(name)
 		},
 	}
 	return rmCmd

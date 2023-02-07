@@ -9,8 +9,16 @@ type BaseDir struct {
 	Path string
 }
 
-func NewBaseDir(path string) *BaseDir {
-	return &BaseDir{Path: path}
+var (
+	baseDir *BaseDir
+)
+
+func SetBaseDir(path string) {
+	baseDir = &BaseDir{Path: path}
+}
+
+func BaseDirData() *BaseDir {
+	return baseDir
 }
 
 func (d *BaseDir) Create() error {

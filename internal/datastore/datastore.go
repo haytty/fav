@@ -27,7 +27,7 @@ func newFileWithError(c *config.Config, registerType string) (DataStore, error) 
 	case "fav":
 		return file.NewFileWithError(c.ConfigRootPath, c.FavConfigFileName)
 	case "browser":
-		return file.NewFileWithError(c.ConfigRootPath, c.FavConfigFileName)
+		return file.NewFileWithError(c.ConfigRootPath, c.BrowserConfigFileName)
 	}
 	err := fmt.Errorf("undefined type")
 	return nil, err
