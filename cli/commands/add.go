@@ -13,6 +13,7 @@ func AddCommand(c cli.Cli) *cobra.Command {
 		Short: "Add to favorites",
 		Long: `To the data store
                Add favorite information.`,
+		Args: cobra.MatchAll(cobra.ExactArgs(2)),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			opts := flags.NewGlobalOption()
 			name := args[0]

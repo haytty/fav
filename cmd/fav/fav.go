@@ -10,7 +10,7 @@ import (
 func main() {
 	c := clistruct.NewFavCli()
 	if err := cli.NewFavCommand(c).Execute(); err != nil {
-		fmt.Fprintln(c.Out(), err)
+		fmt.Fprint(c.Err(), err)
 		os.Exit(1)
 	}
 }

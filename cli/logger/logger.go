@@ -7,6 +7,7 @@ import (
 
 func SetupLogger(c cli.Cli) error {
 	logrus.SetOutput(c.Out())
+	logrus.SetFormatter(&logrus.TextFormatter{})
 	err := setLogLevel(c)
 	return err
 }

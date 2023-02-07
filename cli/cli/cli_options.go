@@ -1,8 +1,11 @@
 package cli
 
 import (
+	"fmt"
+	"github.com/haytty/fav/cli/version"
 	"github.com/haytty/fav/internal/util"
 	"os"
+	"strings"
 )
 
 type cliOption func(*FavCli) error
@@ -23,7 +26,7 @@ func SetLogLevel(cli *FavCli) error {
 		"debug",
 		"trace",
 	}
-	loglevel := os.Getenv("FAV_LOG_LEVEL")
+	loglevel := os.Getenv(fmt.Sprintf("%s_LOG_LEVEL", strings.ToUpper(version.Name)))
 	cli.loglevel = loglevel
 
 	if !util.SliceContains[string](validLogLevels, loglevel) {
@@ -32,7 +35,8 @@ func SetLogLevel(cli *FavCli) error {
 	return nil
 }
 
+// TODO not used
 func SetConfigDir(cli *FavCli) error {
-	cli.configDir = os.Getenv("FAV_CONFIG_DIR")
+	cli.configDir = os.Getenv(fmt.Sprintf("%s_CONFIG_DIR", strings.ToUpper(version.Name)))
 	return nil
 }

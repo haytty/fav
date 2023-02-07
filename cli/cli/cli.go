@@ -40,7 +40,8 @@ func (cli *DefaultCli) LogLevel() string {
 type FavCli struct {
 	DefaultCli
 
-	appMode   string
+	appMode string
+	//TODO not used
 	configDir string
 }
 

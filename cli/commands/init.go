@@ -16,11 +16,15 @@ func InitCommand(c cli.Cli) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			opts := flags.NewGlobalOption()
 			params := &fav.Params{DataStore: dataStore}
-
 			return fav.Apply(params, opts)
 		},
 	}
 
-	initCmd.Flags().StringVarP(&dataStore, "data-store", "s", "file", "")
+	flagName := "data-store"
+	initCmd.Flags().StringVarP(&dataStore, flagName, "s", "file", "")
+	//initCmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	//	return []string{"file"}, cobra.ShellCompDirectiveFilterFileExt
+	//})
+
 	return initCmd
 }
