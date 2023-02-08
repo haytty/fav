@@ -23,7 +23,7 @@ func Apply() error {
 	favName, browserName := model.FavName(results[0]), model.BrowserName(results[1])
 	data, browserInfo := f.Fetch(favName), b.Fetch(browserName)
 
-	_, err = browserInfo.Open(data)
+	err = browserInfo.Open(data)
 	if err != nil {
 		return err
 	}

@@ -3,12 +3,12 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/haytty/fav/internal/command"
 	"github.com/haytty/fav/internal/config"
 	"github.com/haytty/fav/internal/datastore"
 	"github.com/haytty/fav/internal/util"
 	"github.com/manifoldco/promptui"
 	"io"
-	"os/exec"
 	"sync"
 )
 
@@ -22,9 +22,9 @@ type BrowserInfo struct {
 	AppPath string `json:"appPath"`
 }
 
-func (f *BrowserInfo) Open(data *FavData) ([]byte, error) {
-	cmd := exec.Command("open", "-a", f.AppPath, data.Url)
-	return cmd.Output()
+func (f *BrowserInfo) Open(data *FavData) error {
+	cmd := command.NewCommand("open", "-a", f.AppPath, data.Url)
+	return cmd.Execute()
 }
 
 type Browser struct {

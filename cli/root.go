@@ -33,6 +33,7 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		commands.ListCommand(c),
 		commands.BrowserCommand(c),
 		commands.InitCommand(c),
+		commands.EditCommand(c),
 	)
 
 	opts := flags.NewGlobalOption()

@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/haytty/fav/internal/command"
 	"github.com/haytty/fav/internal/datastore/file"
 	"github.com/haytty/fav/internal/util"
 	"io"
@@ -17,6 +18,16 @@ type Config struct {
 	ConfigFilePath        string `json:"configFilePath"`
 	FavConfigFileName     string `json:"favConfigFileName"`
 	BrowserConfigFileName string `json:"browserConfigFileName"`
+}
+
+func (c *Config) FavEdit() error {
+	cmd := command.NewCommand(Editor(), c.FavConfigFileName)
+	return cmd.Execute()
+}
+
+func (c *Config) BrowserEdit() error {
+	cmd := command.NewCommand(Editor(), c.BrowserConfigFileName)
+	return cmd.Execute()
 }
 
 const (
