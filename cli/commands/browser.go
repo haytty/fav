@@ -18,6 +18,7 @@ func BrowserCommand(c cli.Cli) *cobra.Command {
 	rootCmd.AddCommand(
 		browser.AddCommand(c),
 		browser.RemoveCommand(c),
+		browser.ListCommand(c),
 	)
 	return rootCmd
 }

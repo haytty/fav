@@ -7,6 +7,7 @@ import (
 	"github.com/haytty/fav/cli/logger"
 	"github.com/haytty/fav/cli/version"
 	"github.com/haytty/fav/internal/config"
+	"github.com/haytty/fav/internal/handler/fav"
 	"github.com/haytty/fav/internal/util"
 	"github.com/spf13/cobra"
 	"os"
@@ -20,13 +21,16 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		Long: `This program opens your favorite sites.
                Your favorite browser, 
                Your favorite site from the CLI`,
-		Version:           version.CurrentVersion(),
-		RunE:              commands.ShowHelp(c.Err()),
+		Version: version.CurrentVersion(),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fav.Apply()
+		},
 		PersistentPreRunE: initialize(c),
 	}
 	rootCmd.AddCommand(
 		commands.AddCommand(c),
 		commands.RemoveCommand(c),
+		commands.ListCommand(c),
 		commands.BrowserCommand(c),
 		commands.InitCommand(c),
 	)

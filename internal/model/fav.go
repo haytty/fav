@@ -6,11 +6,17 @@ import (
 	"github.com/haytty/fav/internal/config"
 	"github.com/haytty/fav/internal/datastore"
 	"github.com/haytty/fav/internal/util"
+	"github.com/manifoldco/promptui"
 	"io"
 	"sync"
 )
 
 type FavName string
+
+func (f FavName) String() string {
+	return string(f)
+}
+
 type FavData struct {
 	Url string `json:"url"`
 }
@@ -25,6 +31,16 @@ type Fav struct {
 	M     FavMap `json:"fav_map"`
 	store datastore.DataStore
 	mu    sync.Mutex
+}
+
+func (f *Fav) Fetch(name FavName) *FavData {
+	return f.M[name]
+}
+
+func (f *Fav) Selection() []string {
+	keys := util.MapKeys(f.M)
+	casted_keys := util.ConvertToStrings(keys)
+	return casted_keys
 }
 
 func (f *Fav) Add(name FavName, data *FavData) error {
@@ -62,6 +78,14 @@ func (f *Fav) Save() error {
 func (f *Fav) hasName(name FavName) bool {
 	_, ok := f.M[name]
 	return ok
+}
+
+func (f *Fav) Tui() (int, string, error) {
+	prompt := promptui.Select{
+		Label: "my favorite sites",
+		Items: f.Selection(),
+	}
+	return prompt.Run()
 }
 
 func LoadFav() (*Fav, error) {

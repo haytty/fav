@@ -6,19 +6,41 @@ import (
 	"github.com/haytty/fav/internal/config"
 	"github.com/haytty/fav/internal/datastore"
 	"github.com/haytty/fav/internal/util"
+	"github.com/manifoldco/promptui"
 	"io"
+	"os/exec"
 	"sync"
 )
 
 type BrowserName string
+
+func (f BrowserName) String() string {
+	return string(f)
+}
+
 type BrowserInfo struct {
 	AppPath string `json:"appPath"`
+}
+
+func (f *BrowserInfo) Open(data *FavData) ([]byte, error) {
+	cmd := exec.Command("open", "-a", f.AppPath, data.Url)
+	return cmd.Output()
 }
 
 type Browser struct {
 	M     BrowserMap `json:"browser_map"`
 	store datastore.DataStore
 	mu    sync.Mutex
+}
+
+func (f *Browser) Fetch(name BrowserName) *BrowserInfo {
+	return f.M[name]
+}
+
+func (f *Browser) Selection() []string {
+	keys := util.MapKeys(f.M)
+	casted_keys := util.ConvertToStrings(keys)
+	return casted_keys
 }
 
 func NewBrowserInfo(appPath string) *BrowserInfo {
@@ -62,6 +84,14 @@ func (f *Browser) Save() error {
 func (f *Browser) hasName(name BrowserName) bool {
 	_, ok := f.M[name]
 	return ok
+}
+
+func (f *Browser) Tui() (int, string, error) {
+	prompt := promptui.Select{
+		Label: "which browser is?",
+		Items: f.Selection(),
+	}
+	return prompt.Run()
 }
 
 func LoadBrowser() (*Browser, error) {
