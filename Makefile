@@ -13,3 +13,6 @@ build:
 
 clean:
 	rm -fr ./bin/*
+
+test:
+	go test -v ./...
