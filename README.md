@@ -8,7 +8,11 @@ Since it can be opened in the specified browser, it can be opened without sharin
 ```
 git clone git@github.com:haytty/fav.git
 ```
-2. Run make install.
+2. Go into the repository
+```
+cd ./fav
+```
+3. Run make install.
 Deployed in `/usr/local/bin` by default
 ```
 sudo make install
