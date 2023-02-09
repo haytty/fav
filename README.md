@@ -19,11 +19,21 @@ Instructions on how to use this tool.
 Check the help for detailed command usage. `fav --help`
 
 1. First create a config file
-`fav init`
+```
+fav init
+```
 
 2. Next, register your favorite site information
-`fav add $name $url`
+```
+fav add Github https://github.com
+```
 
 3. Next, register your favorite browser information
+```
+fav browser add Chrome "/Applications/Google Chrome.app"
+```
 
 4. Start `fav`. You can use your favorite information.
+```
+fav
+```
