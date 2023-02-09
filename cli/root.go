@@ -37,13 +37,18 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 	)
 
 	opts := flags.NewGlobalOption()
+	flagName := "base-dir"
+	defaultDir := filepath.Join(os.Getenv("HOME"), ".config", "fav")
 	rootCmd.PersistentFlags().StringVarP(
 		&opts.BaseDir,
-		"base-dir",
+		flagName,
 		"d",
-		filepath.Join(os.Getenv("HOME"), ".config", "fav"),
+		defaultDir,
 		"base directory",
 	)
+	rootCmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{defaultDir}, cobra.ShellCompDirectiveFilterFileExt
+	})
 
 	return rootCmd
 }

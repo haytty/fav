@@ -20,9 +20,9 @@ func InitCommand(c cli.Cli) *cobra.Command {
 
 	flagName := "data-store"
 	initCmd.Flags().StringVarP(&dataStore, flagName, "s", "file", "")
-	//initCmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	//	return []string{"file"}, cobra.ShellCompDirectiveFilterFileExt
-	//})
+	initCmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"file"}, cobra.ShellCompDirectiveFilterFileExt
+	})
 
 	return initCmd
 }
