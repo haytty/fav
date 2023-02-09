@@ -1,15 +1,15 @@
-.PHONY: build clean install
+.PHONY: build clean install uninstall
 
 APP_NAME := fav
+PREFIX := /usr/local/bin
 
-install: build copy
+install:
+	./scripts/install.sh --prefix $(PREFIX)
 uninstall:
-	rm -fr /usr/local/bin/$(APP_NAME)
-build: fav_build
+	./scripts/uninstall.sh --prefix $(PREFIX)
 
-fav_build:
-	go build -ldflags="-s -w" -trimpath -o ./bin/$(APP_NAME) ./cmd/$(APP_NAME)
+build:
+	./scripts/build.sh --clean
+
 clean:
 	rm -fr ./bin/*
-copy:
-	cp -pr ./bin/$(APP_NAME) /usr/local/bin/$(APP_NAME)
