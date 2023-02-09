@@ -1,15 +1,11 @@
 package command
 
 import (
-	"io"
 	"os"
 	"os/exec"
 )
 
 type Command struct {
-	stdin   io.Reader
-	stdout  io.Writer
-	stderr  io.Writer
 	command *exec.Cmd
 }
 

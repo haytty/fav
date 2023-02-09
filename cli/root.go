@@ -50,9 +50,13 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		defaultDir,
 		"base directory",
 	)
-	rootCmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return []string{defaultDir}, cobra.ShellCompDirectiveFilterFileExt
-	})
+	if err := rootCmd.RegisterFlagCompletionFunc(
+		flagName,
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return []string{defaultDir}, cobra.ShellCompDirectiveFilterFileExt
+		}); err != nil {
+		os.Exit(1)
+	}
 
 	return rootCmd
 }
@@ -60,14 +64,13 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 func initialize(c cli.Cli) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		opts := flags.NewGlobalOption()
-		err := logger.SetupLogger(c)
-		if err != nil {
+		if err := logger.SetupLogger(c); err != nil {
 			return err
 		}
 
 		config.SetBaseDir(opts.BaseDir)
 		if util.IsDirectoryExist(opts.BaseDir) {
-			err = config.LoadConfig()
+			err := config.LoadConfig()
 			if err != nil {
 				return err
 			}

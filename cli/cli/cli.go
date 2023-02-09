@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"io"
 	"os"
 )
@@ -45,10 +46,14 @@ type FavCli struct {
 	configDir string
 }
 
-func (cli *FavCli) Apply(opts ...cliOption) {
+func (cli *FavCli) Apply(opts ...cliOption) error {
 	for _, opt := range opts {
-		opt(cli)
+		err := opt(cli)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 func NewFavCli(opts ...cliOption) *FavCli {
@@ -66,7 +71,11 @@ func NewFavCli(opts ...cliOption) *FavCli {
 	}
 
 	opts = append(opts, defaultOptions...)
-	cli.Apply(opts...)
+	err := cli.Apply(opts...)
+	if err != nil {
+		fmt.Fprintln(cli.stderr, err)
+		os.Exit(1)
+	}
 
 	return cli
 }

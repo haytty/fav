@@ -37,10 +37,6 @@ const (
 )
 
 var (
-	configRootPath = filepath.Join(os.Getenv("HOME"), ".config", "fav")
-)
-
-var (
 	cached_data *Config
 )
 
@@ -91,7 +87,10 @@ func LoadConfig() error {
 
 func ConfigData() *Config {
 	if cached_data == nil {
-		LoadConfig()
+		err := LoadConfig()
+		if err != nil {
+			os.Exit(1)
+		}
 	}
 	return cached_data
 }

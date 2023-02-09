@@ -1,9 +1,5 @@
 package version
 
-import (
-	"fmt"
-)
-
 var (
 	Name         = "fav"
 	BuildVersion = ""
@@ -11,5 +7,5 @@ var (
 )
 
 func CurrentVersion() string {
-	return fmt.Sprintf("%s", Version)
+	return Version
 }
