@@ -1,4 +1,5 @@
 [![Go](https://github.com/haytty/fav/actions/workflows/go.yml/badge.svg)](https://github.com/haytty/fav/actions/workflows/go.yml)
+[![Coverage Status](https://coveralls.io/repos/github/haytty/fav/badge.svg?branch=master)](https://coveralls.io/github/haytty/fav?branch=master)
 
 # fav
 Favarite sites store for CLI
