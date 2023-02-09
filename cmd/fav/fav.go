@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/haytty/fav/cli"
 	clistruct "github.com/haytty/fav/cli/cli"
 	"os"
@@ -10,7 +11,7 @@ import (
 func main() {
 	c := clistruct.NewFavCli()
 	if err := cli.NewFavCommand(c).Execute(); err != nil {
-		fmt.Fprint(c.Err(), err)
+		fmt.Fprintln(c.Out(), color.RedString(err.Error()))
 		os.Exit(1)
 	}
 }

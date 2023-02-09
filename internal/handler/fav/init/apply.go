@@ -2,6 +2,7 @@ package init
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/haytty/fav/cli/version"
 	"github.com/haytty/fav/internal/config"
 )
@@ -25,8 +26,8 @@ func Apply(params *Params) error {
 		return err
 	}
 	fmt.Printf(
-		"%s init complete!\n"+
-			"config dir path is %s\n",
+		color.GreenString("%s init complete!\n")+
+			color.GreenString("config dir path is %s\n"),
 		version.Name,
 		d.Path,
 	)

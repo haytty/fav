@@ -61,7 +61,7 @@ func (f *Browser) Add(name BrowserName, data *BrowserInfo) error {
 
 func (f *Browser) Remove(name BrowserName) error {
 	if !f.hasName(name) {
-		return fmt.Errorf("%s is not found. please check your fav data.", name)
+		return fmt.Errorf("%s is not found. please check your browser info.", name)
 	}
 	f.mu.Lock()
 	delete(f.M, name)

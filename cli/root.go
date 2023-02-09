@@ -21,7 +21,9 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		Long: `This program opens your favorite sites.
                Your favorite browser, 
                Your favorite site from the CLI`,
-		Version: version.CurrentVersion(),
+		Version:       version.CurrentVersion(),
+		SilenceUsage:  true,
+		SilenceErrors: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return fav.Apply()
 		},

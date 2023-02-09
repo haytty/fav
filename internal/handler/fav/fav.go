@@ -1,6 +1,7 @@
 package fav
 
 import (
+	"fmt"
 	"github.com/haytty/fav/internal/model"
 	"github.com/haytty/fav/internal/prompt"
 )
@@ -17,7 +18,7 @@ func Apply() error {
 
 	results, err := prompt.Start(f, b)
 	if err != nil {
-		return err
+		return fmt.Errorf("Processing Interrupted.")
 	}
 
 	favName, browserName := model.FavName(results[0]), model.BrowserName(results[1])
