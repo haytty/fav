@@ -1,3 +1,5 @@
+[![Go](https://github.com/haytty/fav/actions/workflows/go.yml/badge.svg)](https://github.com/haytty/fav/actions/workflows/go.yml)
+
 # fav
 Favarite sites store for CLI
 Manage your favorite site information.
