@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/haytty/fav/cli/cli"
 	"github.com/haytty/fav/cli/commands"
 	"github.com/haytty/fav/cli/flags"
@@ -18,9 +19,10 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "fav",
 		Short: "Fav is a favorite site opener.",
-		Long: `This program opens your favorite sites.
-               Your favorite browser, 
-               Your favorite site from the CLI`,
+		Long: fmt.Sprintln(
+			"This program opens your favorite sites.\n" +
+				"Your favorite browser.\n" +
+				"Your favorite site from the CLI"),
 		Version:       version.CurrentVersion(),
 		SilenceUsage:  true,
 		SilenceErrors: true,

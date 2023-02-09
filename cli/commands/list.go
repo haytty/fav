@@ -9,10 +9,9 @@ import (
 func ListCommand(c cli.Cli) *cobra.Command {
 	addCmd := &cobra.Command{
 		Use:   "list",
-		Short: "show favorites",
-		Long: `To the data store
-               Add favorite information.`,
-		Args: cobra.MatchAll(cobra.ExactArgs(0)),
+		Short: "Show favorite site list",
+		Long:  `Show the registered favorites site list.`,
+		Args:  cobra.MatchAll(cobra.ExactArgs(0)),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return fav.Apply()
 		},

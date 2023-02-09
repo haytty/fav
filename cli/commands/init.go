@@ -11,7 +11,7 @@ func InitCommand(c cli.Cli) *cobra.Command {
 	initCmd := &cobra.Command{
 		Use:   "init",
 		Short: "Initialize config file",
-		Long:  `Initialize config file`,
+		Long:  `Generates configuration information needed to use the fav command`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			params := &fav.Params{DataStoreType: dataStore}
 			return fav.Apply(params)

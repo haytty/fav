@@ -9,10 +9,9 @@ import (
 func RemoveCommand(c cli.Cli) *cobra.Command {
 	rmCmd := &cobra.Command{
 		Use:   "remove",
-		Short: "",
-		Long: `
-               `,
-		Args: cobra.MatchAll(cobra.ExactArgs(1)),
+		Short: "Remove from favorite browsers",
+		Long:  `Removes favorite browser information from the data store.`,
+		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			name := args[0]
 			return browser.Apply(name)
