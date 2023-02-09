@@ -10,7 +10,7 @@ import (
 func AddCommand(c cli.Cli) *cobra.Command {
 	addCmd := &cobra.Command{
 		Use:   "add",
-		Short: "Add to favorites",
+		Short: "Add to favorite sites",
 		Long:  fmt.Sprintf("To the data store\nAdd favorite information."),
 		Args:  cobra.MatchAll(cobra.ExactArgs(2)),
 		RunE: func(cmd *cobra.Command, args []string) error {
