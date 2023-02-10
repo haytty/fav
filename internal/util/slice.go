@@ -8,13 +8,15 @@ func SliceContains[T comparable](xs []T, y T) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 func ConvertToStrings[T fmt.Stringer](stringers []T) []string {
-	var values []string
+	values := make([]string, 0, len(stringers))
 	for _, v := range stringers {
 		values = append(values, v.String())
 	}
+
 	return values
 }

@@ -10,5 +10,6 @@ func NewGlobalOption() *GlobalOption {
 	if globalOption == nil {
 		globalOption = &GlobalOption{}
 	}
+
 	return globalOption
 }

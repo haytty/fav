@@ -1,7 +1,15 @@
 package util
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
-func PrettyJson(a any) ([]byte, error) {
-	return json.MarshalIndent(a, "", "    ")
+func PrettyJSON(a any) ([]byte, error) {
+	data, err := json.MarshalIndent(a, "", "    ")
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	return data, nil
 }

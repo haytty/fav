@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/fatih/color"
 	"github.com/haytty/fav/cli"
 	clistruct "github.com/haytty/fav/cli/cli"
-	"os"
 )
 
 func main() {

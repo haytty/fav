@@ -3,13 +3,14 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"sync"
+
 	"github.com/haytty/fav/internal/command"
 	"github.com/haytty/fav/internal/config"
 	"github.com/haytty/fav/internal/datastore"
 	"github.com/haytty/fav/internal/util"
 	"github.com/manifoldco/promptui"
-	"io"
-	"sync"
 )
 
 type BrowserName string
@@ -23,12 +24,16 @@ type BrowserInfo struct {
 }
 
 func (f *BrowserInfo) Open(data *FavData) error {
-	cmd := command.NewCommand("open", "-a", f.AppPath, data.Url)
-	return cmd.Execute()
+	cmd := command.NewCommand("open", "-a", f.AppPath, data.URL)
+	if err := cmd.Execute(); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	return nil
 }
 
 type Browser struct {
-	M     BrowserMap `json:"browser_map"`
+	M     BrowserMap `json:"browserMap"`
 	store datastore.DataStore
 	mu    sync.Mutex
 }
@@ -39,8 +44,9 @@ func (f *Browser) Fetch(name BrowserName) *BrowserInfo {
 
 func (f *Browser) Selection() []string {
 	keys := util.MapKeys(f.M)
-	casted_keys := util.ConvertToStrings(keys)
-	return casted_keys
+	castedKeys := util.ConvertToStrings(keys)
+
+	return castedKeys
 }
 
 func NewBrowserInfo(appPath string) *BrowserInfo {
@@ -49,40 +55,51 @@ func NewBrowserInfo(appPath string) *BrowserInfo {
 
 type BrowserMap map[BrowserName]*BrowserInfo
 
+var errAlreadyBrowserKey = fmt.Errorf("is already exist. please check your browser list")
+
 func (f *Browser) Add(name BrowserName, data *BrowserInfo) error {
 	if f.hasName(name) {
-		return fmt.Errorf("%s is already exist. please check your fav data.", name)
+		return fmt.Errorf("%s %w", name, errAlreadyBrowserKey)
 	}
+
 	f.mu.Lock()
 	f.M[name] = data
 	f.mu.Unlock()
+
 	return nil
 }
 
+var errBrowserKeyIsNotFound = fmt.Errorf("is not found. please check your browser info")
+
 func (f *Browser) Remove(name BrowserName) error {
 	if !f.hasName(name) {
-		return fmt.Errorf("%s is not found. please check your browser info.", name)
+		return fmt.Errorf("%s %w", name, errBrowserKeyIsNotFound)
 	}
+
 	f.mu.Lock()
 	delete(f.M, name)
 	f.mu.Unlock()
+
 	return nil
 }
 
 func (f *Browser) Save() error {
-	m, err := util.PrettyJson(f)
+	m, err := util.PrettyJSON(f)
 	if err != nil {
-		return err
+		return fmt.Errorf("%w", err)
 	}
+
 	_, err = f.store.WriteWithIdempotency(m)
 	if err != nil {
-		return err
+		return fmt.Errorf("%w", err)
 	}
+
 	return nil
 }
 
 func (f *Browser) hasName(name BrowserName) bool {
 	_, ok := f.M[name]
+
 	return ok
 }
 
@@ -91,32 +108,43 @@ func (f *Browser) Tui() (int, string, error) {
 		Label: "which browser is?",
 		Items: f.Selection(),
 	}
-	return prompt.Run()
+
+	i, s, err := prompt.Run()
+	if err != nil {
+		return i, s, fmt.Errorf("%w", err)
+	}
+
+	return i, s, nil
 }
 
 func LoadBrowser() (*Browser, error) {
 	registerType := "browser"
-	store, err := datastore.NewDataStoreWithError(config.ConfigData(), registerType)
+
+	store, err := datastore.NewDataStoreWithError(config.GetConfig(), registerType)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w", err)
 	}
 
-	b, err := io.ReadAll(store)
+	loadData, err := io.ReadAll(store)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w", err)
 	}
 
-	f := &Browser{
+	browser := &Browser{
 		store: store,
 	}
-	// After initalize config file is 0 bite
-	if len(b) <= 0 {
+
+	// After initialize config file is 0 bite
+	if len(loadData) == 0 {
 		fm := make(BrowserMap)
-		f.M = fm
-		return f, nil
+		browser.M = fm
+
+		return browser, nil
 	}
-	if err := json.Unmarshal(b, f); err != nil {
-		return nil, err
+
+	if err := json.Unmarshal(loadData, browser); err != nil {
+		return nil, fmt.Errorf("%w", err)
 	}
-	return f, nil
+
+	return browser, nil
 }

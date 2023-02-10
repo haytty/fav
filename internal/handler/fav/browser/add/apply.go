@@ -2,25 +2,27 @@ package add
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/haytty/fav/internal/model"
 )
 
 func Apply(name, appPath string) error {
-	f, err := model.LoadBrowser()
+	browser, err := model.LoadBrowser()
 	if err != nil {
-		return err
+		return fmt.Errorf("browser load: %w", err)
 	}
 
 	browserName := model.BrowserName(name)
-	if err := f.Add(browserName, model.NewBrowserInfo(appPath)); err != nil {
-		return err
-	}
-	if err := f.Save(); err != nil {
-		return err
+	if err := browser.Add(browserName, model.NewBrowserInfo(appPath)); err != nil {
+		return fmt.Errorf("browser add: %w", err)
 	}
 
-	info := f.Fetch(browserName)
+	if err := browser.Save(); err != nil {
+		return fmt.Errorf("browser save: %w", err)
+	}
+
+	info := browser.Fetch(browserName)
 	fmt.Printf(
 		color.GreenString("You have registered the following information:\n")+
 			color.GreenString("Name: %s\n")+
@@ -28,5 +30,6 @@ func Apply(name, appPath string) error {
 		browserName,
 		info.AppPath,
 	)
+
 	return nil
 }

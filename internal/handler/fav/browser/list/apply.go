@@ -2,17 +2,20 @@ package list
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/haytty/fav/internal/model"
-	"strings"
 )
 
 func Apply() error {
-	f, err := model.LoadBrowser()
+	browser, err := model.LoadBrowser()
 	if err != nil {
-		return err
+		return fmt.Errorf("browser load: %w", err)
 	}
+
 	color.Green("The following browsers are registered as favourites:")
-	fmt.Println(strings.Join(f.Selection(), "\n"))
+	fmt.Println(strings.Join(browser.Selection(), "\n"))
+
 	return nil
 }

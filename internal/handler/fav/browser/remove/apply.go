@@ -2,24 +2,26 @@ package remove
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/haytty/fav/internal/model"
 )
 
 func Apply(name string) error {
-	f, err := model.LoadBrowser()
+	browser, err := model.LoadBrowser()
 	if err != nil {
-		return err
+		return fmt.Errorf("browser load: %w", err)
 	}
 
 	browserName := model.BrowserName(name)
-	info := f.Fetch(browserName)
+	info := browser.Fetch(browserName)
 
-	if err := f.Remove(browserName); err != nil {
-		return err
+	if err := browser.Remove(browserName); err != nil {
+		return fmt.Errorf("browser remove: %w", err)
 	}
-	if err := f.Save(); err != nil {
-		return err
+
+	if err := browser.Save(); err != nil {
+		return fmt.Errorf("browser save: %w", err)
 	}
 
 	fmt.Printf(
@@ -29,5 +31,6 @@ func Apply(name string) error {
 		browserName,
 		info.AppPath,
 	)
+
 	return nil
 }

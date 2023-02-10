@@ -2,6 +2,9 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/haytty/fav/cli/cli"
 	"github.com/haytty/fav/cli/commands"
 	"github.com/haytty/fav/cli/flags"
@@ -11,12 +14,10 @@ import (
 	"github.com/haytty/fav/internal/handler/fav"
 	"github.com/haytty/fav/internal/util"
 	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
 )
 
-func NewFavCommand(c cli.Cli) *cobra.Command {
-	rootCmd := &cobra.Command{
+func NewFavCommand(cli cli.Cli) *cobra.Command {
+	rootCmd := &cobra.Command{ //nolint:exhaustivestruct
 		Use:   "fav",
 		Short: "Fav is a favorite site opener.",
 		Long: fmt.Sprintln(
@@ -27,17 +28,17 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return fav.Apply()
+			return fmt.Errorf("%w", fav.Apply())
 		},
-		PersistentPreRunE: initialize(c),
+		PersistentPreRunE: initialize(cli),
 	}
 	rootCmd.AddCommand(
-		commands.AddCommand(c),
-		commands.RemoveCommand(c),
-		commands.ListCommand(c),
-		commands.BrowserCommand(c),
-		commands.InitCommand(c),
-		commands.EditCommand(c),
+		commands.AddCommand(cli),
+		commands.RemoveCommand(cli),
+		commands.ListCommand(cli),
+		commands.BrowserCommand(cli),
+		commands.InitCommand(cli),
+		commands.EditCommand(cli),
 	)
 
 	opts := flags.NewGlobalOption()
@@ -50,6 +51,7 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 		defaultDir,
 		"base directory",
 	)
+
 	if err := rootCmd.RegisterFlagCompletionFunc(
 		flagName,
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -64,15 +66,17 @@ func NewFavCommand(c cli.Cli) *cobra.Command {
 func initialize(c cli.Cli) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		opts := flags.NewGlobalOption()
+
 		if err := logger.SetupLogger(c); err != nil {
-			return err
+			return fmt.Errorf("setup logger: %w", err)
 		}
 
 		config.SetBaseDir(opts.BaseDir)
+
 		if util.IsDirectoryExist(opts.BaseDir) {
 			err := config.LoadConfig()
 			if err != nil {
-				return err
+				return fmt.Errorf("load config: %w", err)
 			}
 		}
 

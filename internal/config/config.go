@@ -3,12 +3,13 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/haytty/fav/internal/command"
-	"github.com/haytty/fav/internal/datastore/file"
-	"github.com/haytty/fav/internal/util"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/haytty/fav/internal/command"
+	"github.com/haytty/fav/internal/datastore/file"
+	"github.com/haytty/fav/internal/util"
 )
 
 type Config struct {
@@ -22,12 +23,20 @@ type Config struct {
 
 func (c *Config) FavEdit() error {
 	cmd := command.NewCommand(Editor(), c.FavConfigFileName)
-	return cmd.Execute()
+	if err := cmd.Execute(); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	return nil
 }
 
 func (c *Config) BrowserEdit() error {
 	cmd := command.NewCommand(Editor(), c.BrowserConfigFileName)
-	return cmd.Execute()
+	if err := cmd.Execute(); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	return nil
 }
 
 const (
@@ -36,15 +45,14 @@ const (
 	browserDataFile    = "browser.db"
 )
 
-var (
-	cached_data *Config
-)
+var cachedData *Config
 
 func newFileConfigWithError(dataStore string, configRootPath string) (*Config, error) {
 	datastore, err := file.NewFileWithError(configRootPath, filepath.Join(configRootPath, configFileBaseName))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w", err)
 	}
+
 	return &Config{
 		dataStore:             datastore,
 		DataStore:             dataStore,
@@ -55,13 +63,15 @@ func newFileConfigWithError(dataStore string, configRootPath string) (*Config, e
 	}, nil
 }
 
+var errUndefinedDatastoreType = fmt.Errorf("new config error. check your datastore type")
+
 func NewConfigWithError(dataStore string, configRootPath string) (*Config, error) {
 	switch dataStore {
 	case "file":
 		return newFileConfigWithError(dataStore, configRootPath)
 	}
-	err := fmt.Errorf("new config error. check your datastore type.")
-	return nil, err
+
+	return nil, errUndefinedDatastoreType
 }
 
 func LoadConfig() error {
@@ -69,37 +79,45 @@ func LoadConfig() error {
 
 	datastore, err := file.NewFileWithError(dir.Path, filepath.Join(dir.Path, configFileBaseName))
 	if err != nil {
-		return err
+		return fmt.Errorf("%w", err)
 	}
+
 	conf := &Config{
 		dataStore: datastore,
 	}
+
 	b, err := io.ReadAll(conf.dataStore)
 	if err != nil {
-		return err
+		return fmt.Errorf("%w", err)
 	}
+
 	if err := json.Unmarshal(b, conf); err != nil {
-		return err
+		return fmt.Errorf("%w", err)
 	}
-	cached_data = conf
+
+	cachedData = conf
+
 	return nil
 }
 
-func ConfigData() *Config {
-	if cached_data == nil {
+func GetConfig() *Config {
+	if cachedData == nil {
 		err := LoadConfig()
 		if err != nil {
 			os.Exit(1)
 		}
 	}
-	return cached_data
+
+	return cachedData
 }
 
 func (c *Config) Save() error {
-	b, err := util.PrettyJson(c)
+	b, err := util.PrettyJSON(c)
 	if err != nil {
-		return err
+		return fmt.Errorf("%w", err)
 	}
+
 	_, err = c.dataStore.WriteWithIdempotency(b)
-	return err
+
+	return fmt.Errorf("%w", err)
 }

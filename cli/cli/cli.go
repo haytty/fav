@@ -22,16 +22,16 @@ type DefaultCli struct {
 	loglevel string
 }
 
-func (d *DefaultCli) In() io.Reader {
-	return d.stdin
+func (cli *DefaultCli) In() io.Reader {
+	return cli.stdin
 }
 
-func (d *DefaultCli) Out() io.Writer {
-	return d.stdout
+func (cli *DefaultCli) Out() io.Writer {
+	return cli.stdout
 }
 
-func (d *DefaultCli) Err() io.Writer {
-	return d.stderr
+func (cli *DefaultCli) Err() io.Writer {
+	return cli.stderr
 }
 
 func (cli *DefaultCli) LogLevel() string {
@@ -42,8 +42,8 @@ type FavCli struct {
 	DefaultCli
 
 	appMode string
-	//TODO not used
-	configDir string
+
+	// configDir string
 }
 
 func (cli *FavCli) Apply(opts ...cliOption) error {
@@ -53,6 +53,7 @@ func (cli *FavCli) Apply(opts ...cliOption) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -71,6 +72,7 @@ func NewFavCli(opts ...cliOption) *FavCli {
 	}
 
 	opts = append(opts, defaultOptions...)
+
 	err := cli.Apply(opts...)
 	if err != nil {
 		fmt.Fprintln(cli.stderr, err)

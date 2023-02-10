@@ -10,27 +10,31 @@ type File struct {
 	DataFile       *os.File
 }
 
-func (f *File) WriteWithIdempotency(p []byte) (n int, err error) {
+func (f *File) WriteWithIdempotency(p []byte) (int, error) {
 	realName := f.DataFile.Name()
 	tmpName := fmt.Sprintf("%s.bk", realName)
 
-	err = os.Rename(realName, tmpName)
+	err := os.Rename(realName, tmpName)
 	if err != nil {
 		return 0, err
 	}
-	f2, err := fileOpen(realName)
+
+	newFile, err := fileOpen(realName)
 	if err != nil {
 		return 0, err
 	}
-	defer f2.Close()
-	n, err = f2.Write(p)
+	defer newFile.Close()
+
+	n, err := newFile.Write(p)
 	if err != nil {
 		return 0, err
 	}
+
 	err = os.Remove(tmpName)
 	if err != nil {
 		return 0, err
 	}
+
 	return n, nil
 }
 
@@ -51,6 +55,7 @@ func NewFileWithError(configRootPath string, configFileName string) (*File, erro
 	if err != nil {
 		return nil, err
 	}
+
 	return &File{
 		ConfigRootPath: configRootPath,
 		DataFile:       f,

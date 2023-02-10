@@ -1,5 +1,5 @@
 package prompt
 
-type PromptList interface {
+type List interface {
 	Selection() []string
 }

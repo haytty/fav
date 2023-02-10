@@ -2,24 +2,26 @@ package remove
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/haytty/fav/internal/model"
 )
 
 func Apply(name string) error {
-	f, err := model.LoadFav()
+	fav, err := model.LoadFav()
 	if err != nil {
-		return err
+		return fmt.Errorf("fav load: %w", err)
 	}
 
 	favName := model.FavName(name)
-	data := f.Fetch(favName)
+	data := fav.Fetch(favName)
 
-	if err := f.Remove(favName); err != nil {
-		return err
+	if err := fav.Remove(favName); err != nil {
+		return fmt.Errorf("fav remove: %w", err)
 	}
-	if err := f.Save(); err != nil {
-		return err
+
+	if err := fav.Save(); err != nil {
+		return fmt.Errorf("fav save: %w", err)
 	}
 
 	fmt.Printf(
@@ -27,7 +29,8 @@ func Apply(name string) error {
 			color.YellowString("Name: %s\n")+
 			color.YellowString("URL: %s\n"),
 		favName,
-		data.Url,
+		data.URL,
 	)
+
 	return nil
 }
